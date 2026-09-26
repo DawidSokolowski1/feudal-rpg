@@ -6,6 +6,7 @@ class Enemies():
         self.defence=defence
         self.avoidance=avoidance
         self.speed=speed
+        self.effects = {}
         self.enemy_stat=[self.health, self.attack, self.defence,self.avoidance,self.speed]
 
     def show_stats(self):
@@ -30,12 +31,26 @@ class Enemies():
         self.enemy_stat=[self.health, self.attack, self.defence,self.avoidance,self.speed]
 
 
+
     def enemy_fight(self):
         stats=[]
 
+    def tick_effects(self):
+        if "Poison" in self.effects:
+         self.health -= 1
+        if "Bleeding" in self.effects:
+         self.health -= 1
+         self.effects = {e: t - 1 for e, t in self.effects.items() if t > 1}
+
+    def is_stunned(self):
+        return "Stun" in self.effects
+
     #guard_sword=guard_sword_stats()
     
-
+guard = Enemies('Guard', 4, 3, 1, 0, 1)
+guard.effects["Poison"] = 3
+guard.tick_effects()
+print(guard.health, guard.effects)   # 3 {'Poison': 2}
  #Test
 # guard=Enemies('Guard',4,3,1,0,1)
 # shooter=Enemies('Bowman',2,1,0,0.2,3)

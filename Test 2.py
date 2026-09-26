@@ -11,6 +11,8 @@ class Player(Intro):
 
         self.temp_attack=self.attack
         self.temp_defence=self.defence
+        self.temp_avoidance=self.avoidance
+        self.temp_speed=self.speed
 
 
     def print_health(self):
@@ -22,8 +24,20 @@ class Player(Intro):
             self.temp_attack*=1.1
         elif command==2:
             self.temp_defence*=1.1
+        elif command==3:
+            self.avoidance+=0.1
+        elif command==4:
+            self.speed*=2
         else:
             print("XXX")
+
+    def reset_temp_stat(self):
+        self.temp_attack=self.attack
+        self.temp_defence=self.defence
+        self.temp_avoidance=self.avoidance
+        self.temp_speed=self.speed
+        
+
 
     def player_temp_stats(self):
         temp_stats=[]

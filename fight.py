@@ -1,5 +1,6 @@
 from Player import Player
 from enemies import Enemies
+from Inventory import Inventory
 import random
 class Fight():
     def __init__(self, player, enemy_1, enemy_2,enemy_3):
@@ -34,6 +35,8 @@ class Fight():
 
     def fight_start(self):
         print("You encoutered enemies!")
+        print(player.inv.equiped, player.inv.get_bonus("Attack"))
+        self.player.reset_temp_stats()
         self.enemies_status()
 
     def enemies_status(self):
@@ -62,10 +65,11 @@ class Fight():
                         if random.random() > enemy.avoidance:
                             print("XXX")
                             if enemy.health >0:
+                             self.apply_weapon_status(enemy)
                              if enemy.defence < self.player.temp_attack:
                                 enemy.health=enemy.health-(self.player.temp_attack-enemy.defence)
                                 print("\nYou damaged: "+ enemy.name+
-                                    "\nDamage: " +  str(self.player.attack-enemy.defence))
+                                    "\nDamage: " +  str(round(self.player.temp_attack-enemy.defence, 1)))
                                 if enemy.health <0:
                                     enemy.health= 0
                                 status=True
@@ -93,24 +97,57 @@ class Fight():
                           "\n4: Speed"+
                           "\n"))
         if command==1:
-            player.temp_attack*=1.1
-            player.temp_attack=round(player.temp_attack,1)
+            self.player.temp_attack*=1.1
+            self.player.temp_attack=round(player.temp_attack,1)
             print("Your Attack increased to: " + str(player.temp_attack))
         elif command==2:
-            player.temp_defence*=1.1
-            player.temp_defence=round(player.temp_defence,1)
+            self.player.temp_defence*=1.1
+            self.player.temp_defence=round(player.temp_defence,1)
             print("Your Defence increased to: " + str(player.temp_defence))
         elif command==3:
-            player.temp_avoidance+=0.1
-            player.temp_avoidance=round(player.temp_avoidance,3)
+            self.player.temp_avoidance+=0.1
+            self.player.temp_avoidance=round(player.temp_avoidance,3)
             print("Your Avoidance increased to: " + str(player.temp_avoidance))
         elif command==4:
-            player.temp_speed*=2
-            player.temp_speed=round(player.temp_speed,1)
+            self.player.temp_speed*=2
+            self.player.temp_speed=round(player.temp_speed,1)
             print("Your Speed increased to: " + str(player.temp_speed))
 
         else:
-            print("XXX")         
+            print("XXX")
+
+    #for items against enemies
+    def choose_enemy(self):
+        enemies = [self.enemy_1, self.enemy_2, self.enemy_3]
+        while True:
+            choice = input("Target (1-3): ")
+            if choice.isdigit() and 1 <= int(choice) <= 3 and enemies[int(choice) - 1].health > 0:
+                return enemies[int(choice) - 1]
+            print("Pick a living enemy.")
+
+    def apply_weapon_status(self, enemy):
+        status, chance, duration = self.player.inv.weapon_status()
+        if status and random.random() < chance:
+            enemy.effects[status] = duration
+            print(f"{enemy.name} is now under the influence of {status}!")
+
+    def use_item_menu(self):
+            inv = self.player.inv
+            names = list(inv.inventory["Items"])
+            if not names:
+                print("\nYou have no items.")
+                return False
+            for i, name in enumerate(names, 1):
+                print(f"{i}. {name} x{inv.inventory['Items'][name]['Amount']}")
+            choice = input("Number (anything else cancels): ")
+            if not choice.isdigit() or not 1 <= int(choice) <= len(names):
+                return False
+            name = names[int(choice) - 1]
+            enemy = None
+            if inv.inventory["Items"][name]["Target"] == "enemy":
+                enemy = self.choose_enemy()
+            return inv.use_item(name, self.player, enemy)     
+        
     # def focus(self):
     #     stats=[self.player.attack,self.player.defence, self.player.avoidance, self.player.speed]
     #     stats_focus=stats[:]
@@ -171,6 +208,15 @@ class Fight():
             #     status=False
            
     def enemy_attack(self, enemy):
+        stunned = enemy.is_stunned()   # read BEFORE tick_effects
+        enemy.tick_effects()
+        if enemy.health <= 0:
+            enemy.health = 0
+            print(f"\n{enemy.name} died from its wounds.")
+            return
+        if stunned:
+            print(f"\n{enemy.name} can't move.")
+            return
         if self.player.temp_avoidance < random.random():
             if self.player.temp_defence>=enemy.attack:
                 self.player.health-=1
@@ -218,6 +264,10 @@ class Fight():
                         print("LRÁ")
                         self.focus()
                         break
+                    elif command == 3:
+                        if self.use_item_menu():
+                            self.enemies_status()
+                            break
                     else:
                         print("Enter number between 1-3!")
                 #elif move in battlefield  --> Idea to make the code smaller 
@@ -307,5 +357,10 @@ fight=Fight(player,fast_knight, guard_big_1, guard)
 #enemies=[guard,guard]
 
 #fight.enemy_1_attack()
+player.inv.inventory["Weapons"]["Sickle"]=player.inv.weapons["Sickle"]
+player.inv.equip()
+player.inv.pick_up("Items", "Bread")
+player.inv.pick_up("Items", "Poison")
 fight.fight_start()
+
 fight.speed_check()

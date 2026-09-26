@@ -1,4 +1,6 @@
 from intro import Intro
+from Inventory import Inventory
+from enemies import Enemies
 
 class Player(Intro):
     def __init__(self):
@@ -8,7 +10,7 @@ class Player(Intro):
         self.avoidance=0.1
         self.speed=1.01
         self.player_stats=[self.health, self.attack, self.defence, self.avoidance, self.speed]
-
+        self.inv = Inventory()
 # Temp stats, that increase only during the battle 
         self.temp_attack=self.attack
         self.temp_defence=self.defence
@@ -32,6 +34,13 @@ class Player(Intro):
               "\nAvoidacne: ".ljust(15) + str(self.avoidance)+
               "\nSpeed: ".ljust(15) + str(self.speed))
 
+# calculates player stats + equiped inventory 
+    def reset_temp_stats(self):
+        self.temp_attack = self.attack + self.inv.get_bonus("Attack")
+        self.temp_defence = self.defence + self.inv.get_bonus("Defence")
+        self.temp_avoidance = self.avoidance + self.inv.get_bonus("Avoidance")
+        self.temp_speed = self.speed + self.inv.get_bonus("Speed")
+
 player=Player()
 # player.intro_get_information_player()
 # print(player.name)
@@ -44,4 +53,6 @@ player=Player()
 # player.print_health()
 # print(player.player_stats)
         
-    
+player = Player()
+guard = Enemies("Guard", 4, 3, 1, 0, 1)
+
