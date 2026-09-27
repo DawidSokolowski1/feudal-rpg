@@ -4,7 +4,7 @@ class Items():
 
         self.weapons = {
             "Pitchfork": {"Attack": 1},
-            "Sickle": {"Attack": 2, "Status": "Bleeding", "Chance": 0.7, "Duration": 2},
+            "Sickle": {"Attack": 2, "Status": "Bleeding", "Chance": 0.3, "Duration": 2},
             "Fang-Studded Pike": {
                 "Attack": 2, "Status": "Wutanfall", "Chance": 0.3, "Duration": 2,
             },
@@ -51,14 +51,14 @@ class Inventory(Items):
                 "Accessory":None}
         self.slots = {"Weapons": "Weapon", "Armor": "Armor", "Accessories": "Accessory"}
 
-    def pick_up(self, category, name):
+    def pick_up(self, category, name, amount=1):
         if name in self.inventory[category]:
             if category == "Items":
-                self.inventory[category][name]["Amount"] += 1
+                self.inventory[category][name]["Amount"] += amount
             return
         item = dict(self.catalog[category][name])
         if category == "Items":
-            item["Amount"] = 1
+            item["Amount"] = amount
         self.inventory[category][name] = item
         
 
@@ -122,6 +122,16 @@ class Inventory(Items):
             if name:
                 total += self.inventory[category][name].get(stat, 0)
         return total
+
+    def has_amount(self, category, name, amount):
+        item = self.inventory[category].get(name)
+        return item is not None and item.get("Amount", 0) >= amount
+
+    def remove_amount(self, category, name, amount):
+        self.inventory[category][name]["Amount"] -= amount
+        if self.inventory[category][name]["Amount"] <= 0:
+            del self.inventory[category][name]
+
    
 
 

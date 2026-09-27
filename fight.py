@@ -2,6 +2,10 @@ from Player import Player
 from enemies import Enemies
 from Inventory import Inventory
 import random
+import time
+from text_tempo import fight_print
+from text_tempo import enemy_stats_print
+
 class Fight():
     def __init__(self, player, enemy_1, enemy_2,enemy_3):
         self.enemy_1=enemy_1
@@ -9,38 +13,21 @@ class Fight():
         self.enemy_3=enemy_3
         self.player=player
 
-    # def fight(self):
-    #     print(self.player.health)
-    #     enemies=[self.enemy_1, self.enemy_2, self.enemy_3]
-    #     print(self.enemy_1.health)
 
-    #     while self.player.health >= 0 and self.enemy_1.health+self.enemy_2.health+self.enemy_3.health>0:
-    #         for enemy in enemies:
-    #             print(enemy.health)
-    #             if self.player.speed < enemy.speed:
-    #                 self.player.health=self.player.health-(self.player.defence-enemy.attack)
-    #                 print(self.player.health)
-    #                 print("XXX")
-    #             elif self.player.speed >= enemy.speed:
-    #                 choice=int(input("Choose comand: \n1. Attack\n2.Increase your defence \n"))
-    #                 if choice ==1:
-    #                     enemy.health-=self.player.attack
-    #                     print("Enemy health: " + str(enemy.health))
-    #                 if choice ==2:
-    #                     self.player.defence+=1
+   
 
     def enemy_1_attack(self,enemy):
         self.player.health-=self.enemy_1.attack
-        print(f"{self.enemy_1.name} hit u with {self.enemy_1.attack} damage. \nYour HP: {self.player.health}")
+        fight_print(f"{self.enemy_1.name} hit u with {self.enemy_1.attack} damage. \nYour HP: {self.player.health}")
 
     def fight_start(self):
-        print("You encoutered enemies!")
-        print(player.inv.equiped, player.inv.get_bonus("Attack"))
+        fight_print("You encoutered enemies!")
+        fight_print(player.inv.equiped, player.inv.get_bonus("Attack"))
         self.player.reset_temp_stats()
         self.enemies_status()
 
     def enemies_status(self):
-        print ("\nEnemy: ".ljust(15)+self.enemy_1.name.ljust(15)  +  self.enemy_2.name.ljust(15)  + self.enemy_3.name.ljust(15)  +
+        enemy_stats_print ("\nEnemy: ".ljust(15)+self.enemy_1.name.ljust(15)  +  self.enemy_2.name.ljust(15)  + self.enemy_3.name.ljust(15)  +
               "\nHP: ".ljust(15) + str(round(self.enemy_1.health,1)).ljust(15)   + str(round(self.enemy_2.health,1)).ljust(15)  + str(round(self.enemy_3.health,1)).ljust(15) +
                "\n\nAttack: ".ljust(16)   +str(self.enemy_1.attack).ljust(15)  + str(self.enemy_2.attack).ljust(15) + str(self.enemy_3.attack).ljust(15)+
                "\nDefence: ".ljust(15)  +str(self.enemy_1.defence).ljust(15) + str(self.enemy_2.defence).ljust(15) + str(self.enemy_3.defence).ljust(15)+
@@ -63,25 +50,24 @@ class Fight():
                 if opponent_choice==index+1:
                     if enemy.health>0:
                         if random.random() > enemy.avoidance:
-                            print("XXX")
                             if enemy.health >0:
                              self.apply_weapon_status(enemy)
                              if enemy.defence < self.player.temp_attack:
                                 enemy.health=enemy.health-(self.player.temp_attack-enemy.defence)
-                                print("\nYou damaged: "+ enemy.name+
+                                fight_print("\nYou damaged: "+ enemy.name+
                                     "\nDamage: " +  str(round(self.player.temp_attack-enemy.defence, 1)))
                                 if enemy.health <0:
                                     enemy.health= 0
                                 status=True
                              else:
                                  enemy.health-=1
-                                 print("\nYou damaged: "+ enemy.name+
+                                 fight_print("\nYou damaged: "+ enemy.name+
                                         "\nDamage: " +  str(1))
                                  status=True
                             else:
-                                print("This is a corpse already!")
+                               fight_print("This is a corpse already!")
                         else:
-                                print("You missed!")
+                                fight_print("You missed!")
                                 status=True
                     else:
                         print("\nThis is a corpse already!"+
@@ -99,22 +85,22 @@ class Fight():
         if command==1:
             self.player.temp_attack*=1.1
             self.player.temp_attack=round(player.temp_attack,1)
-            print("Your Attack increased to: " + str(player.temp_attack))
+            fight_print("Your Attack increased to: " + str(player.temp_attack))
         elif command==2:
             self.player.temp_defence*=1.1
             self.player.temp_defence=round(player.temp_defence,1)
-            print("Your Defence increased to: " + str(player.temp_defence))
+            fight_print("Your Defence increased to: " + str(player.temp_defence))
         elif command==3:
             self.player.temp_avoidance+=0.1
             self.player.temp_avoidance=round(player.temp_avoidance,3)
-            print("Your Avoidance increased to: " + str(player.temp_avoidance))
+            fight_print("Your Avoidance increased to: " + str(player.temp_avoidance))
         elif command==4:
             self.player.temp_speed*=2
             self.player.temp_speed=round(player.temp_speed,1)
-            print("Your Speed increased to: " + str(player.temp_speed))
+            fight_print("Your Speed increased to: " + str(player.temp_speed))
 
         else:
-            print("XXX")
+            print("")
 
     #for items against enemies
     def choose_enemy(self):
@@ -123,13 +109,13 @@ class Fight():
             choice = input("Target (1-3): ")
             if choice.isdigit() and 1 <= int(choice) <= 3 and enemies[int(choice) - 1].health > 0:
                 return enemies[int(choice) - 1]
-            print("Pick a living enemy.")
+            fight_print("Pick a living enemy.")
 
     def apply_weapon_status(self, enemy):
         status, chance, duration = self.player.inv.weapon_status()
         if status and random.random() < chance:
             enemy.effects[status] = duration
-            print(f"{enemy.name} is now under the influence of {status}!")
+            fight_print(f"{enemy.name} is now under the influence of {status}!")
 
     def use_item_menu(self):
             inv = self.player.inv
@@ -148,95 +134,53 @@ class Fight():
                 enemy = self.choose_enemy()
             return inv.use_item(name, self.player, enemy)     
         
-    # def focus(self):
-    #     stats=[self.player.attack,self.player.defence, self.player.avoidance, self.player.speed]
-    #     stats_focus=stats[:]
-    #     try:
-    #         choice_focus=int(input(("Choose the stat u want to increase for the fight: ")))
-    #         for index, stat in enumerate(stats):
-    #             print("FFF")
-    #             if choice_focus==index:
-    #                 stats_focus[choice_focus]*=1.1
-    #                 print(stats_focus[choice_focus])
-    #                 print(stats_focus)
+
                    
             
-                    
-    #     except ValueError:
-    #         print("Enter a number!")
-
-
-            # if opponent_choice==1:
-            #     status=True
-            #     if random.random() > self.enemy_1.avoidance:
-            #         if self.enemy_1.defence>=self.player.attack:
-            #             self.enemy_1.health-=1
-            #             if self.enemy_1.health<0:
-            #                 self.enemy_1.health=0
-            #         else:
-            #             self.enemy_1.health=self.enemy_1.health-(self.player.attack-self.enemy_1.defence)
-            #             if self.enemy_1.health<0:
-            #                 self.enemy_1.health=0
-            #         print("\nYou damaged opponent: " + self.enemy_1.name + 
-            #               "\nDamage: " + str(self.player.attack-self.enemy_1.defence) )
-            #     else:
-            #         print("You missed!")
-            # elif opponent_choice==2:
-            #     status=True
-            #     if random.random() > self.enemy_2.avoidance:
-            #         if self.enemy_2.defence>=self.player.attack:
-            #             self.enemy_2.health-=1
-            #         else:
-            #             self.enemy_2.health=self.enemy_2.health - (self.player.attack-self.enemy_2.defence)
-            #             if self.enemy_2.health<0:
-            #                 self.enemy_2.health=0
-            #             print("\nYou damaged opponent: " + self.enemy_2.name + 
-            #                   "\nDamage: " + str(self.player.attack-self.enemy_2.defence))
-            # elif opponent_choice==3:
-            #     status=True
-            #     if random.random() > self.enemy_3.avoidance:
-            #         if self.enemy_3.defence>=self.player.attack:
-            #             self.enemy_3.health-=1
-            #         else:
-            #             self.enemy_3.health=self.enemy_3.health - (self.player.attack-self.enemy_3.defence)
-            #             if self.enemy_3.health<0:
-            #                 self.enemy_3.health=0
-            #         print("\nYou damaged opponent: " + self.enemy_3.name +
-            #               "\nDamage: " + str(self.player.attack-self.enemy_3.defence))
-            # else:
-            #     print("\nPress number between 1 and 3")
-            #     status=False
            
     def enemy_attack(self, enemy):
         stunned = enemy.is_stunned()   # read BEFORE tick_effects
         enemy.tick_effects()
         if enemy.health <= 0:
             enemy.health = 0
-            print(f"\n{enemy.name} died from its wounds.")
+            fight_print(f"\n{enemy.name} died from its wounds.")
             return
         if stunned:
-            print(f"\n{enemy.name} can't move.")
+            fight_print(f"\n{enemy.name} can't move.")
             return
+        
+        if enemy.heal > 0:
+            others = [e for e in (self.enemy_1, self.enemy_2, self.enemy_3)
+                  if e is not enemy and e.health > 0]
+            if others:
+                target = min(others, key=lambda e: e.health)
+                before = target.health
+                target.health = min(target.health + enemy.heal, target.max_health)
+                healed = round(target.health - before, 1)
+                fight_print(f"\n{enemy.name} heals {target.name} for {healed} HP!"
+                    f"\n{target.name} HP: {round(target.health, 1)}")
+                return
+          
         if self.player.temp_avoidance < random.random():
             if self.player.temp_defence>=enemy.attack:
                 self.player.health-=1
-                print("\n"+enemy.name + " attacked you!"+
+                fight_print("\n"+enemy.name + " attacked you!"+
                     "\nDamage: "+ str(1)+
                     "\nYour Health: " + str(round(self.player.health,1))+
                     "\n")
             else:
                 self.player.health=self.player.health-(enemy.attack-self.player.temp_defence)
                 if self.player.health>0:
-                    print("\n"+enemy.name + " attacked you!"+
+                    fight_print("\n"+enemy.name + " attacked you!"+
                         "\nDamage: "+ str(round(enemy.attack - self.player.temp_defence,1))+
                         "\nYour Health: " + str(round(self.player.health,1))+
                             "\n")
                 else:
-                    print("\n"+self.enemy_1.name + " attacked you!"+
+                    fight_print("\n"+self.enemy_1.name + " attacked you!"+
                             "\nDamage: "+ str(round(enemy.attack - self.player.temp_defence,1)))
-                    print("You are Dead!")
+                    fight_print("You are Dead!")
         else:
-            print("\nYou avoided the enemy's attack")
+            fight_print("\nYou avoided the enemy's attack")
 
 
     def speed_check(self):
@@ -278,65 +222,17 @@ class Fight():
                     self.enemy_attack(self.enemy_1)
                     if self.player.health<0:
                         break
-                    # if self.player.temp_avoidance < random.random():
-                    #     if self.player.temp_defence>=self.enemy_1.attack:
-                    #         self.player.health-=1
-                    #         print("\n"+self.enemy_1.name + " attacked you!"+
-                    #             "\nDamage: "+ str(1)+
-                    #             "\nYour Health: " + str(round(self.player.health,1))+
-                    #             "\n")
-                    #     else:
-                    #         self.player.health=self.player.health-(self.enemy_1.attack-self.player.temp_defence)
-                    #         if self.player.health>0:
-                    #             print("\n"+self.enemy_1.name + " attacked you!"+
-                    #                 "\nDamage: "+ str(round(self.enemy_1.attack - self.player.temp_defence,1))+
-                    #                 "\nYour Health: " + str(round(self.player.health,1))+
-                    #                     "\n")
-                    #         else:
-                    #             print("\n"+self.enemy_1.name + " attacked you!"+
-                    #                     "\nDamage: "+ str(round(self.enemy_1.attack - self.player.temp_defence,1)))
-                    #             print("You are Dead!")
-                    #             break
-                    # else:
-                    #     print("\nYou avoided the enemy's attack")
+                   
                 elif move=="Enemy 2" and self.enemy_2.health >0:
                     self.enemy_attack(self.enemy_2)
                     if self.player.health<0:
                         break
-                    # if self.player.temp_avoidance < random.random():
-                    #     if self.player.temp_defence>=self.enemy_2.attack:
-                    #         self.player.health-=1
-                    #         print("\n"+self.enemy_2.name + " attacked you!"+
-                    #             "\nDamage: "+ str(1)+
-                    #             "\nYour Health: " + str(round(self.player.health,1))+
-                    #             "\n")
-                    #     else:
-                    #         self.player.health=self.player.health-(self.enemy_2.attack-self.player.temp_defence)
-                    #         print("\n"+self.enemy_2.name + " attacked you!"+
-                    #             "\nDamage: "+ str(round(self.enemy_2.attack - self.player.temp_defence,1))+
-                    #             "\nYour Health: " + str(round(self.player.health,1))+
-                    #             "\n")
-                    # else:
-                    #     print("\nYou avoided the enemy's attack")
+                  
                 elif move=="Enemy 3" and self.enemy_3.health >0:
                     self.enemy_attack(self.enemy_3)
                     if self.player.health<0:
                         break
-                    # if self.player.temp_avoidance < random.random():
-                    #     if self.player.temp_defence>=self.enemy_3.attack:
-                    #         self.player.health-=1
-                    #         print("\n"+self.enemy_3.name + " attacked you!"+
-                    #             "\nDamage: "+ str(1)+
-                    #             "\nYour Health: " + str(round(self.player.health,1))+
-                    #             "\n")
-                    #     else:
-                    #         self.player.health=self.player.health-(self.enemy_3.attack-self.player.temp_defence)
-                    #         print("\n" + self.enemy_3.name + " attacked you!"+
-                    #             "\nDamage: "+ str(round(self.enemy_3.attack - self.player.temp_defence,1))+
-                    #             "\nYour Health: " + str(round(self.player.health - self.player.temp_defence,1))+
-                    #             "\n")
-                    # else:
-                    #     print("\nYou avoided the enemy's attack")
+                   
                 
                     
       
@@ -357,10 +253,11 @@ fight=Fight(player,fast_knight, guard_big_1, guard)
 #enemies=[guard,guard]
 
 #fight.enemy_1_attack()
-player.inv.inventory["Weapons"]["Sickle"]=player.inv.weapons["Sickle"]
-player.inv.equip()
+
 player.inv.pick_up("Items", "Bread")
 player.inv.pick_up("Items", "Poison")
-fight.fight_start()
+#test
+#fight.fight_start()
 
-fight.speed_check()
+#test
+#fight.speed_check()

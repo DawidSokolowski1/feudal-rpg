@@ -17,6 +17,20 @@ class Player(Intro):
         self.temp_avoidance=self.avoidance
         self.temp_speed=self.speed
 
+    def player_stats_intro(self):
+        self.health=25
+        self.attack=2
+        self.defence=0
+        self.avoidance=0.0
+        self.speed=0.5
+
+    def player_stats_normal(self):
+        self.health = 30
+        self.attack = 5
+        self.defence = 1
+        self.avoidance = 0.1
+        self.speed = 1.01
+
     def print_health(self):
         print(self.health)
 

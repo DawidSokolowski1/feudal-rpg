@@ -2,12 +2,26 @@ class Enemies():
     def __init__(self, name, health, attack, defence, avoidance, speed):
         self.name=name 
         self.health=health
+        self.max_health = health 
         self.attack=attack
         self.defence=defence
         self.avoidance=avoidance
         self.speed=speed
         self.effects = {}
         self.enemy_stat=[self.health, self.attack, self.defence,self.avoidance,self.speed]
+
+
+
+    def spawn(name, count=1):
+        stats = ENEMY_TEMPLATES[name]
+        if count == 1:
+            return Enemies(name, stats["health"], stats["attack"],
+                            stats["defence"], stats["avoidance"], stats["speed"])
+        return [
+            Enemies(f"{name} {i+1}", stats["health"], stats["attack"],
+                    stats["defence"], stats["avoidance"], stats["speed"])
+            for i in range(count)
+        ]
 
     def show_stats(self):
         print(f"Name: {self.name} \nHealth: {self.health} \nAttack: {self.attack} \nDefence: {self.defence} \nAvoidance: {self.avoidance} \nSpeed: {self.speed}")
@@ -46,11 +60,36 @@ class Enemies():
         return "Stun" in self.effects
 
     #guard_sword=guard_sword_stats()
-    
-guard = Enemies('Guard', 4, 3, 1, 0, 1)
-guard.effects["Poison"] = 3
-guard.tick_effects()
-print(guard.health, guard.effects)   # 3 {'Poison': 2}
+
+
+ENEMY_TEMPLATES = {
+    "Mercenary": {"health": 5, "attack": 3, "defence": 1, "avoidance": 0, "speed": 1},
+    "Guard": {"health": 6, "attack": 3, "defence": 1, "avoidance": 0.1, "speed": 2},
+    "Fast Knight": {"health": 8, "attack": 3, "defence": 3, "avoidance": 0.2, "speed": 10},
+    "Healer": {"health": 5, "attack": 1, "defence": 1, "avoidance": 0.1, "speed": 2, "heal": 2},
+}
+
+def spawn(name, count=1):
+    stats = ENEMY_TEMPLATES[name]
+    if count == 1:
+        enemy = Enemies(name, stats["health"], stats["attack"],
+                         stats["defence"], stats["avoidance"], stats["speed"])
+        enemy.heal = stats.get("heal", 0)
+        return enemy
+    result = []
+    for i in range(count):
+        enemy = Enemies(f"{name} {i+1}", stats["health"], stats["attack"],
+                         stats["defence"], stats["avoidance"], stats["speed"])
+        enemy.heal = stats.get("heal", 0)
+        result.append(enemy)
+    return result
+
+guard_1 = Enemies("Guard 1", 4, 3, 1, 0, 1)
+guard_2 = Enemies("Guard 2", 4, 3, 1, 0, 1)
+guard_3 = Enemies("Guard 3", 4, 3, 1, 0, 1)
+
+
+
  #Test
 # guard=Enemies('Guard',4,3,1,0,1)
 # shooter=Enemies('Bowman',2,1,0,0.2,3)
