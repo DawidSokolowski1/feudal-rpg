@@ -12,16 +12,16 @@ class Enemies():
 
 
 
-    def spawn(name, count=1):
-        stats = ENEMY_TEMPLATES[name]
-        if count == 1:
-            return Enemies(name, stats["health"], stats["attack"],
-                            stats["defence"], stats["avoidance"], stats["speed"])
-        return [
-            Enemies(f"{name} {i+1}", stats["health"], stats["attack"],
-                    stats["defence"], stats["avoidance"], stats["speed"])
-            for i in range(count)
-        ]
+    # def spawn(name, count=1):
+    #     stats = ENEMY_TEMPLATES[name]
+    #     if count == 1:
+    #         return Enemies(name, stats["health"], stats["attack"],
+    #                         stats["defence"], stats["avoidance"], stats["speed"])
+    #     return [
+    #         Enemies(f"{name} {i+1}", stats["health"], stats["attack"],
+    #                 stats["defence"], stats["avoidance"], stats["speed"])
+    #         for i in range(count)
+        # ]
 
     def show_stats(self):
         print(f"Name: {self.name} \nHealth: {self.health} \nAttack: {self.attack} \nDefence: {self.defence} \nAvoidance: {self.avoidance} \nSpeed: {self.speed}")
@@ -63,10 +63,15 @@ class Enemies():
 
 
 ENEMY_TEMPLATES = {
-    "Mercenary": {"health": 5, "attack": 3, "defence": 1, "avoidance": 0, "speed": 1},
+    "Mercenary": {"health": 4, "attack": 3, "defence": 1, "avoidance": 0, "speed": 1},
+    "Elite Mercenary":{"health": 5, "attack": 5, "defence":2, "avoidance":0.1, "speed":1.9},
     "Guard": {"health": 6, "attack": 3, "defence": 1, "avoidance": 0.1, "speed": 2},
     "Fast Knight": {"health": 8, "attack": 3, "defence": 3, "avoidance": 0.2, "speed": 10},
     "Healer": {"health": 5, "attack": 1, "defence": 1, "avoidance": 0.1, "speed": 2, "heal": 2},
+    "Wolf": {"health": 4, "attack":3, "defence":0, "avoidance":0.2, "speed": 3},
+    "General": {"health": 10, "attack": 4, "defence": 2, "avoidance": 0.1,"speed": 2, "ignore_defence": True},
+    "Elite Guard": {"health": 7, "attack": 4, "defence": 2, "avoidance": 0.1, "speed": 2},
+    "Landlord": {"health": 14, "attack": 5, "defence": 3, "avoidance": 0.15, "speed": 2},
 }
 
 def spawn(name, count=1):
@@ -83,6 +88,7 @@ def spawn(name, count=1):
         enemy.heal = stats.get("heal", 0)
         result.append(enemy)
     return result
+
 
 guard_1 = Enemies("Guard 1", 4, 3, 1, 0, 1)
 guard_2 = Enemies("Guard 2", 4, 3, 1, 0, 1)

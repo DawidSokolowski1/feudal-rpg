@@ -6,6 +6,20 @@ from Player import Player
 import Inventory
 import enemies
 from text_tempo import pause
+import world
+from location import LOCATIONS
+from Player import Player  
+import world
+from location import LOCATIONS
+
+
+while True:
+    player = Player()
+    player.player_stats_normal()
+    result = world.explore(player, LOCATIONS, "house")
+    if result != "restart":
+        break
+
 
 #story_1=story.Story()
 #story_1.chapter_1_intro()
@@ -13,7 +27,7 @@ player=Player()
 
 # player.player_stats_intro()
 # fight_1=Fight(player, enemies.guard_1, enemies.guard_2, enemies.guard_3)
-# # story.chapter_1_intro()
+# # story.chapter_1_intro()1
 # fight_1.fight_start()
 # fight_1.speed_check()
 # if player.health <= 0:
@@ -27,6 +41,7 @@ player.player_stats_normal()
 # fight_2=Fight(player, m1, m2, m3 )
 # fight_2.fight_start()
 # fight_2.speed_check()
+world.explore(player, LOCATIONS, "house")
 # healer = enemies.spawn("Healer")
 # m2, m3 = enemies.spawn("Mercenary", 2)
 # fight_x=Fight(player, healer, m2,m3)

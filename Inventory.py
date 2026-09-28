@@ -1,4 +1,5 @@
 #Inventory and Items
+import pandas as pd
 class Items():
     def __init__(self):
 
@@ -20,16 +21,18 @@ class Items():
         self.accessory={
             "Rune-Etched Ring":{"Avoidance":0.1},
             "Piece of Stem":{"Speed":1},
-            "Shield-Formed Broche":{"Defence":1
-            },
-        }
+            "Shield-Formed Broche":{"Defence":1},
+            "Pagan Pendant":{"Avoidance":0.1},
+            }
+        
 
         self.items = {
             "Poison":   {"Status": "Poison", "Duration": 3, "Target": "enemy"},
             "Bread":    {"HP": 5, "Target": "self"},
             "Wine":     {"Defence": 1, "Target": "self"},
-            "Lavendel": {"Status": "Stun", "Duration": 3, "Target": "enemy"
-            },
+            "Lavendel": {"Status": "Stun", "Duration": 3, "Target": "enemy"},
+            "East Villa Key": {},
+            "West Villa Key": {},
         }
 
 
@@ -63,13 +66,38 @@ class Inventory(Items):
         
 
     def open_inventory(self):
-            for category, items in self.inventory.items():
-                print(category+":")
-                for item, stats in items.items():
-                    print("\n\t" + item +":")
-                    for stat_desc, stat_value in stats.items():
-                        print("\t\t"+ stat_desc + ": " + str(stat_value))
+        rows = []
+        for category, items in self.inventory.items():
+            for item, stats in items.items():
+                stat_str = ", ".join(f"{k}: {v}" for k, v in stats.items())
+                rows.append({"Category": category, "Item": item, "Stats": stat_str})
+    
+        if not rows:
+            print("\nYour inventory is empty.")
+            return
+    
+        df = pd.DataFrame(rows)
+        headers = list(df.columns)
+        widths = [max(df[h].astype(str).map(len).max(), len(h)) for h in headers]
+    
+        print()
+        print("  ".join(h.ljust(w) for h, w in zip(headers, widths)))
+        print("-" * (sum(widths) + 2 * (len(headers) - 1)))
+        for _, row in df.iterrows():
+            print("  ".join(str(row[h]).ljust(w) for h, w in zip(headers, widths)))
+    # def open_inventory(self):
+    #         for category, items in self.inventory.items():
+    #             print("\n"+category+":")
+    #             for item, stats in items.items():
+    #                 print("\n" + item +":")
+    #                 for stat_desc, stat_value in stats.items():
+    #                     print(" " +stat_desc + ": " + str(stat_value))
 
+    def show_equipped(self):
+        print("\nEquipped:")
+        for slot, name in self.equiped.items():
+            print(f"  {slot}: {name if name else '(none)'}")
+            
     def equip(self):
         categories = list(self.slots)          # ["Weapons", "Armor", "Accessories"]
         for i, cat in enumerate(categories, 1):

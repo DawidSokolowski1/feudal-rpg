@@ -176,7 +176,7 @@ class Fight():
                         "\nYour Health: " + str(round(self.player.health,1))+
                             "\n")
                 else:
-                    fight_print("\n"+self.enemy_1.name + " attacked you!"+
+                    fight_print("\n"+enemy.name + " attacked you!"+
                             "\nDamage: "+ str(round(enemy.attack - self.player.temp_defence,1)))
                     fight_print("You are Dead!")
         else:
@@ -220,21 +220,26 @@ class Fight():
                      print("You neeed to enter a number!")
                 elif move=="Enemy 1" and self.enemy_1.health >0:
                     self.enemy_attack(self.enemy_1)
-                    if self.player.health<0:
+                    if self.player.health<=0:
                         break
                    
                 elif move=="Enemy 2" and self.enemy_2.health >0:
                     self.enemy_attack(self.enemy_2)
-                    if self.player.health<0:
+                    if self.player.health<=0:
                         break
                   
                 elif move=="Enemy 3" and self.enemy_3.health >0:
                     self.enemy_attack(self.enemy_3)
-                    if self.player.health<0:
+                    if self.player.health<=0:
                         break
                    
                 
-                    
+    def resolve_fight(self, exp_reward):
+        if self.player.health <= 0:
+            return "dead"
+        self.player.reset_temp_stats()
+        self.player.gain_exp(exp_reward)
+        return "alive"                    
       
 
 
