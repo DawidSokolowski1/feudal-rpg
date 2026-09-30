@@ -53,10 +53,4 @@ On Windows, use `python` or `py` instead of `python3`.
 | `enemies.py` | Enemy stats and spawning. |
 | `intro.py` | Character creation (name, age, zodiac sign). |
 
-## Course topics covered
 
-- Primitives, control flow, functions, containers — used throughout
-- Classes and inheritance — `Player`, `Enemies`, `Fight`, `Intro`
-  (`Player` inherits from `Intro`)
-- `pandas` — used to render the inventory table
-- Git/GitHub — version control
