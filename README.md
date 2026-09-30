@@ -8,14 +8,25 @@ Built as the final project for an intro Python course at TU Dortmund.
 
 ## Setup
 
-Requires Python 3 and `pandas`.
+Requires Python 3.10+ and `pandas`. Works on macOS, Linux and Windows.
 
 ```bash
 git clone <your repo URL>
 cd feudal-rpg
 pip install pandas
-python3 main.py
+python3 -m feudal_rpg
 ```
+
+On Windows, use `python` or `py` instead of `python3`.
+
+- Run the command from the project folder (the one containing
+  `feudal_rpg/`). The game is a package, so starting `feudal_rpg/__main__.py`
+  directly (e.g. with an IDE's Run button) does not work.
+- Run it in a real terminal (e.g. the VS Code terminal), because the
+  letter-by-letter text needs keyboard access. Press any key while text is
+  printing to skip to the end of it.
+- If you use [uv](https://docs.astral.sh/uv/), `uv run python -m feudal_rpg`
+  installs `pandas` automatically.
 
 ## How to play
 
