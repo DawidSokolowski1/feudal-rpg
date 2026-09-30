@@ -35,8 +35,7 @@ LOCATIONS = {
         ],
     },
     "forest": {
-        "desc": "The forest is dense and quiet, until three shapes emerge"
-                " from the treeline — wolves.",
+        "desc": "The forest is dense and quiet",
         "event": story.forest_event,
         "exits": [
             ("Go back to the neighbor's house", "neighbors_house"),
