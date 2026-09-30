@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+ 
+[project]
+name = "feudal-rpg"
+version = "0.1.0"
+description = "A text-based feudal RPG"
+requires-python = ">=3.10"
+dependencies = [
+    "pandas",
+]
+ 
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["feudal_rpg*"]
