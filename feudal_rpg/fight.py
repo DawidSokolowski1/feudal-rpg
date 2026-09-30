@@ -40,7 +40,6 @@ class Fight():
         reset_temp_stats() sets the player's temp stats to base stats + gear
         bonuses, so Focus boosts from an earlier fight don't carry over.
         """
-        fight_print("You encoutered enemies!")
         self.player.reset_temp_stats()
         self.enemies_status()
 
